@@ -40,6 +40,17 @@ const userSchema = new mongoose.Schema({
         unique: true,
         sparse: true  // Allows null values (for non-Clerk users)
     },
+    // Transaction limits
+    transactionLimits: {
+        perTransaction: { type: Number, default: 10000 },
+        daily: { type: Number, default: 50000 },
+        monthly: { type: Number, default: 500000 }
+    },
+    // Daily transfer tracking (resets at midnight)
+    dailyTransfers: {
+        amount: { type: Number, default: 0 },
+        lastReset: { type: Date, default: Date.now }
+    },
     // RazorpayX fields
     razorpayContactId: String,
     razorpayFundAccountId: String,

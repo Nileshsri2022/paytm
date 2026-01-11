@@ -30,20 +30,35 @@ const authMiddleware = async (req, res, next) => {
         if (!user) {
             // Auto-create user from Clerk
             const clerkUser = await clerkClient.users.getUser(session.sub);
-            user = await User.create({
-                clerkId: session.sub,
-                username: clerkUser.emailAddresses[0]?.emailAddress || clerkUser.id,
-                firstName: clerkUser.firstName || 'User',
-                lastName: clerkUser.lastName || '',
-                password: 'clerk-managed'
-            });
+            const email = clerkUser.emailAddresses[0]?.emailAddress;
 
-            // Create account with initial balance
-            await Account.create({
-                userId: user._id,
-                balance: 10000
-            });
-            console.log('✅ Created new user from Clerk:', user.username);
+            // Check if user exists by email (legacy user)
+            if (email) {
+                user = await User.findOne({ username: email });
+            }
+
+            if (user) {
+                // Link account
+                user.clerkId = session.sub;
+                await user.save();
+                console.log('🔗 Linked existing user to Clerk:', user.username);
+            } else {
+                // New user
+                user = await User.create({
+                    clerkId: session.sub,
+                    username: email || clerkUser.id,
+                    firstName: clerkUser.firstName || 'User',
+                    lastName: clerkUser.lastName || '',
+                    password: 'clerk-managed'
+                });
+
+                // Create account with initial balance
+                await Account.create({
+                    userId: user._id,
+                    balance: 10000
+                });
+                console.log('✅ Created new user from Clerk:', user.username);
+            }
         }
 
         req.userId = user._id;

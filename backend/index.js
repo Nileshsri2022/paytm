@@ -23,18 +23,39 @@ const signupLimiter = rateLimit({
     legacyHeaders: false,
 });
 
+// Transfer rate limiter
+const transferLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 20, // 20 transfers per hour
+    message: { message: "Transfer limit reached, try again later" },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Withdrawal/Payout rate limiter (stricter)
+const payoutLimiter = rateLimit({
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours
+    max: 5, // 5 withdrawals per day
+    message: { message: "Daily withdrawal limit reached" },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
 }));
 app.use(express.json());
 
-// Apply rate limiting to auth routes
+// Apply rate limiting to routes
 app.use("/api/v1/user/signin", authLimiter);
 app.use("/api/v1/user/signup", signupLimiter);
+app.use("/api/v1/account/transfer", transferLimiter);
+app.use("/api/v1/razorpay/payout", payoutLimiter);
 
 app.use("/api/v1", rootRouter);
 
 app.listen(3000, () => {
-    console.log("Server running on port 3000");
+    console.log("🚀 Server running on port 3000");
+    console.log("🔒 Rate limiting enabled for auth, transfer, and payout routes");
 });
