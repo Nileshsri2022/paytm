@@ -346,6 +346,48 @@ paytm-complete-solution/
 
 ---
 
+## 🚀 Deployment
+
+### Frontend → Vercel
+
+1. **Connect GitHub repo** to [vercel.com](https://vercel.com)
+2. **Set root directory** to `frontend`
+3. **Add environment variable:**
+   ```
+   VITE_CLERK_PUBLISHABLE_KEY = pk_test_xxxxx
+   ```
+4. **Deploy!** Auto-deploys on every push to `main`
+
+### Backend → Render
+
+1. **Connect GitHub repo** to [render.com](https://render.com)
+2. **Create Web Service** → select your repo
+3. **Set build command:** `cd backend && npm install`
+4. **Set start command:** `cd backend && npm start`
+5. **Add environment variables:**
+   ```
+   MONGODB_URI
+   CLERK_SECRET_KEY
+   RAZORPAY_KEY_ID
+   RAZORPAY_KEY_SECRET
+   GOOGLE_CLIENT_ID
+   GOOGLE_CLIENT_SECRET
+   ```
+6. **Deploy!** Auto-deploys on every push to `main`
+
+### CI/CD Pipeline
+
+```mermaid
+graph LR
+    A[Push to GitHub] --> B[GitHub Actions]
+    B --> C{Tests Pass?}
+    C -->|Yes| D[Vercel Deploy Frontend]
+    C -->|Yes| E[Render Deploy Backend]
+    C -->|No| F[❌ Build Fails]
+```
+
+---
+
 ## ✅ Feature Checklist
 
 - [x] Clerk Authentication
