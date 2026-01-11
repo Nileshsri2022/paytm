@@ -1,98 +1,78 @@
 # 💰 PayTM Clone
 
-A full-stack digital wallet application inspired by PayTM, built with React and Node.js. Features include wallet-to-wallet transfers, QR payments, Google Contacts import, and Razorpay integration.
+A full-stack digital wallet app with Clerk authentication, Razorpay payments, QR transfers, and Google Contacts import.
 
-![PayTM Clone](https://img.shields.io/badge/Status-Complete-brightgreen) ![Node.js](https://img.shields.io/badge/Node.js-18+-green) ![React](https://img.shields.io/badge/React-18-blue) ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
+![PayTM Clone](https://img.shields.io/badge/Status-Complete-brightgreen) ![Node.js](https://img.shields.io/badge/Node.js-18+-green) ![React](https://img.shields.io/badge/React-18-blue)
 
 ## ✨ Features
 
-### 💳 Wallet Management
-- **Add Money** - Add funds via Razorpay (UPI/Card/NetBanking)
-- **Withdraw** - Withdraw to linked bank account (simulated)
-- **Balance Tracking** - Real-time wallet balance
+### 💳 Core Features
+- **Wallet** - Add money (Razorpay), withdraw, instant transfers
+- **QR Payments** - Scan & pay, generate personal QR
+- **Beneficiaries** - Save favorites for one-tap payments
+- **Statement Download** - Export transactions as CSV
 
-### 💸 Money Transfer
-- **Send Money** - Instant wallet-to-wallet transfers
-- **QR Scan & Pay** - Scan QR codes to pay anyone
-- **QR Generator** - Generate your personal payment QR
+### 🔐 Security
+- **Clerk Authentication** - Secure login with session management
+- **Rate Limiting** - API protection (auth/transfer/payout limits)
+- **Transaction Limits** - Per-transaction (₹10K), daily (₹50K), monthly (₹500K)
+- **Audit Logging** - Track all sensitive operations
 
-### 📱 Contacts Integration
-- **Google Contacts** - Import contacts from Google
-- **Smart Matching** - Auto-detect contacts already on PayTM
-- **User Search** - Find users by name or email
+### 🎨 UX
+- **Toast Notifications** - Elegant feedback (react-hot-toast)
+- **Dark Mode** - System preference + toggle
+- **Skeleton Loaders** - Smooth loading states
 
-### 👤 User Features
-- **Authentication** - JWT-based login/signup
-- **Profile Management** - Update personal details
-- **Transaction History** - View all past transactions
+### 📱 Integrations
+- **Google Contacts** - Import & auto-match users
+- **Razorpay** - Real payment gateway (test mode)
 
 ---
 
 ## 🏗️ Tech Stack
 
-### Backend
-| Technology | Purpose |
-|------------|---------|
-| **Node.js** | Runtime |
-| **Express** | Web framework |
-| **MongoDB** | Database |
-| **Mongoose** | ODM |
-| **JWT** | Authentication |
-| **Razorpay** | Payment gateway |
-| **Google APIs** | Contacts import |
-| **Zod** | Validation |
-| **bcrypt** | Password hashing |
-
-### Frontend
-| Technology | Purpose |
-|------------|---------|
-| **React 18** | UI framework |
-| **Vite** | Build tool |
-| **TailwindCSS** | Styling |
-| **React Router** | Navigation |
-| **Axios** | HTTP client |
-| **QRCode** | QR generation |
-| **React Webcam** | QR scanning |
+| Layer | Technologies |
+|-------|-------------|
+| **Backend** | Node.js, Express, MongoDB, Mongoose, Zod |
+| **Frontend** | React 18, Vite, TailwindCSS, React Router |
+| **Auth** | Clerk |
+| **Payments** | Razorpay |
+| **Extras** | react-hot-toast, QRCode, express-rate-limit |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-paytm-complete-solution/
 ├── backend/
 │   ├── routes/
-│   │   ├── user.js        # Auth & user management
-│   │   ├── account.js     # Balance & transfers
-│   │   ├── google.js      # Google OAuth & contacts
-│   │   └── razorpay.js    # Payments & payouts
+│   │   ├── user.js          # Auth & profile
+│   │   ├── account.js       # Balance & transfers
+│   │   ├── beneficiary.js   # Saved recipients
+│   │   ├── security.js      # Audit logs
+│   │   ├── statement.js     # CSV export
+│   │   ├── google.js        # OAuth & contacts
+│   │   └── razorpay.js      # Payments
 │   ├── services/
-│   │   ├── razorpay.js    # Razorpay API wrapper
-│   │   └── googleContacts.js
-│   ├── db.js              # MongoDB schemas
-│   ├── middleware.js      # JWT auth middleware
-│   └── config.js          # Environment config
+│   │   ├── auditLog.js
+│   │   └── transactionLimits.js
+│   ├── middleware/
+│   │   └── rateLimit.js
+│   └── db.js
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── pages/
 │   │   │   ├── Dashboard.jsx
-│   │   │   ├── SendMoney.jsx
-│   │   │   ├── AddMoney.jsx
-│   │   │   ├── WithdrawMoney.jsx
-│   │   │   ├── ScanPay.jsx
+│   │   │   ├── Beneficiaries.jsx
 │   │   │   ├── TransactionHistory.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   ├── Signin.jsx
-│   │   │   └── Signup.jsx
-│   │   └── components/
-│   │       ├── Users.jsx       # Contacts list
-│   │       ├── QRScanner.jsx   # Camera QR reader
-│   │       ├── QRGenerator.jsx # Payment QR
-│   │       └── Appbar.jsx      # Navigation
-│   └── .env.example
-│
-└── README.md
+│   │   │   └── ...
+│   │   ├── components/
+│   │   │   ├── Skeleton.jsx
+│   │   │   ├── ThemeToggle.jsx
+│   │   │   └── ...
+│   │   ├── hooks/useTheme.js
+│   │   └── utils/toast.js
 ```
 
 ---
@@ -101,36 +81,27 @@ paytm-complete-solution/
 
 ### Prerequisites
 - Node.js 18+
-- MongoDB (local or Atlas)
+- MongoDB
+- Clerk account
 - Razorpay account (test mode)
-- Google Cloud Project (for contacts)
 
-### 1. Clone Repository
+### 1. Clone & Install
 ```bash
 git clone https://github.com/yourusername/paytm-clone.git
 cd paytm-clone
-```
 
-### 2. Backend Setup
-```bash
-cd backend
-npm install
-
-# Create .env file
-cp .env.example .env
-# Edit .env with your credentials
-
+# Backend
+cd backend && npm install
+cp .env.example .env  # Edit with your credentials
 npm start
-```
 
-### 3. Frontend Setup
-```bash
-cd frontend
-npm install
+# Frontend (new terminal)
+cd frontend && npm install
+cp .env.example .env  # Add VITE_CLERK_PUBLISHABLE_KEY
 npm run dev
 ```
 
-### 4. Open App
+### 2. Open App
 Visit `http://localhost:5173`
 
 ---
@@ -139,92 +110,66 @@ Visit `http://localhost:5173`
 
 ### Backend (.env)
 ```env
-# JWT
-JWT_SECRET=your_secret_key
-JWT_EXPIRES_IN=24h
-
-# MongoDB
 MONGODB_URI=mongodb://localhost:27017/paytm
-
-# Google OAuth
-GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=xxx
-GOOGLE_REDIRECT_URI=http://localhost:3000/api/v1/google/callback
-
-# Razorpay
+CLERK_SECRET_KEY=sk_test_xxx
 RAZORPAY_KEY_ID=rzp_test_xxx
 RAZORPAY_KEY_SECRET=xxx
+GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=xxx
+```
+
+### Frontend (.env)
+```env
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_xxx
 ```
 
 ---
 
 ## 📡 API Endpoints
 
-### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/user/signup` | Register user |
-| POST | `/api/v1/user/signin` | Login |
-| GET | `/api/v1/user/me` | Get profile |
+### Core
+| Endpoint | Description |
+|----------|-------------|
+| `GET /account/balance` | Get wallet balance |
+| `POST /account/transfer` | Send money |
+| `GET /account/transactions` | Transaction history |
 
-### Wallet
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/account/balance` | Get balance |
-| POST | `/api/v1/account/transfer` | Send money |
-
-### Payments
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/razorpay/create-order` | Add money |
-| POST | `/api/v1/razorpay/payout` | Withdraw |
-
-### Google
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/google/auth` | OAuth URL |
-| GET | `/api/v1/google/contacts` | Get contacts |
+### Features
+| Endpoint | Description |
+|----------|-------------|
+| `GET /beneficiaries` | List saved recipients |
+| `POST /beneficiaries` | Add beneficiary |
+| `GET /statement/csv` | Download CSV statement |
+| `GET /security/audit-logs` | View audit trail |
 
 ---
 
-## 🧪 Test Credentials (Razorpay)
+## 🧪 Test Credentials
 
 | Type | Value |
 |------|-------|
 | Card | `4111 1111 1111 1111` |
 | UPI | `success@razorpay` |
-| Bank | Any random details |
 
 ---
 
-## 📸 Screenshots
+## ✅ Implemented Features
 
-| Dashboard | Send Money | QR Pay |
-|-----------|------------|--------|
-| Wallet balance & quick actions | User search & transfer | Scan & generate QR |
-
----
-
-## 🚧 Future Improvements
-
-- [ ] Transaction PIN
-- [ ] Request money
-- [ ] Split bill
-- [ ] Dark mode
-- [ ] Push notifications
-- [ ] Email receipts
+- [x] Clerk Authentication
+- [x] Rate Limiting (4 tiers)
+- [x] Transaction Limits
+- [x] Audit Logging
+- [x] Toast Notifications
+- [x] Dark Mode
+- [x] Skeleton Loaders
+- [x] Beneficiary Management
+- [x] Statement Download (CSV)
 
 ---
 
 ## 📄 License
 
-MIT License - feel free to use for learning!
-
----
-
-## 🤝 Contributing
-
-Pull requests welcome! For major changes, open an issue first.
+MIT License
 
 ---
 

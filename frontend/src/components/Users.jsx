@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
+import { showSuccess, showError, showInfo } from "../utils/toast";
 
 // Generate consistent color based on name
 const getAvatarColor = (name) => {
@@ -195,22 +196,43 @@ function ContactCard({ contact, navigate }) {
                 </div>
             </div>
 
-            <button
-                onClick={() => {
-                    if (contact._id) {
-                        navigate("/send?id=" + contact._id + "&name=" + contact.firstName);
-                    } else {
-                        // For Google contacts without app account, show message
-                        alert(`${contact.firstName} is not on PayTM yet. Invite them!`);
-                    }
-                }}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${contact._id
-                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                    : 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                    }`}
-            >
-                {contact._id ? 'Send' : 'Invite'}
-            </button>
+            <div className="flex gap-2">
+                {contact._id && (
+                    <button
+                        onClick={async () => {
+                            try {
+                                await api.post('/beneficiaries', { beneficiaryId: contact._id });
+                                showSuccess('Added to favorites!');
+                            } catch (error) {
+                                if (error.response?.status === 400) {
+                                    showInfo('Already in favorites');
+                                } else {
+                                    showError('Failed to save');
+                                }
+                            }
+                        }}
+                        className="px-3 py-2 rounded-lg text-sm font-medium bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition-colors"
+                        title="Save to favorites"
+                    >
+                        ⭐
+                    </button>
+                )}
+                <button
+                    onClick={() => {
+                        if (contact._id) {
+                            navigate("/send?id=" + contact._id + "&name=" + contact.firstName);
+                        } else {
+                            showInfo(`${contact.firstName} is not on PayTM yet. Invite them!`);
+                        }
+                    }}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${contact._id
+                        ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                        : 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                        }`}
+                >
+                    {contact._id ? 'Send' : 'Invite'}
+                </button>
+            </div>
         </div>
     );
 }

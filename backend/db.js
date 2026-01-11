@@ -122,12 +122,38 @@ const transactionSchema = new mongoose.Schema({
     timestamps: true // Adds createdAt and updatedAt
 });
 
+// Beneficiary Schema - saved recipients for quick payments
+const beneficiarySchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    beneficiaryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    nickname: {
+        type: String,
+        trim: true,
+        maxLength: 50
+    }
+}, {
+    timestamps: true
+});
+
+// Prevent duplicate beneficiaries
+beneficiarySchema.index({ userId: 1, beneficiaryId: 1 }, { unique: true });
+
 const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
 const Transaction = mongoose.model('Transaction', transactionSchema);
+const Beneficiary = mongoose.model('Beneficiary', beneficiarySchema);
 
 module.exports = {
     User,
     Account,
-    Transaction
+    Transaction,
+    Beneficiary
 };

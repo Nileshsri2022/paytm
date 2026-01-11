@@ -186,13 +186,12 @@ export const Dashboard = () => {
                 {/* Quick Actions Grid */}
                 <div className="mb-8">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-                    <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
-                        <QuickAction icon="💸" label="Send" onClick={() => navigate("/send")} />
+                    <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
                         <QuickAction icon="📥" label="Add Money" onClick={() => navigate("/add-money")} />
                         <QuickAction icon="🏧" label="Withdraw" onClick={() => navigate("/withdraw")} />
                         <QuickAction icon="📷" label="Scan & Pay" onClick={() => navigate("/scan-pay")} />
-                        <QuickAction icon="📜" label="History" onClick={() => navigate("/transactions")} />
                         <QuickAction icon="📱" label="My QR" onClick={() => setShowQRGenerator(true)} />
+                        <QuickAction icon="⭐" label="Favorites" onClick={() => navigate("/beneficiaries")} />
                     </div>
                 </div>
 

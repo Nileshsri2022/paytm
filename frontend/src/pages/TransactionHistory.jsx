@@ -102,12 +102,37 @@ export const TransactionHistory = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
             <Appbar />
             <div className="p-8">
                 <div className="max-w-4xl mx-auto">
-                    <Heading label={"Transaction History"} />
-                    <SubHeading label={"View all your wallet transactions"} />
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                            <Heading label={"Transaction History"} />
+                            <SubHeading label={"View all your wallet transactions"} />
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        const response = await api.get('/statement/csv', { responseType: 'blob' });
+                                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                                        const link = document.createElement('a');
+                                        link.href = url;
+                                        link.download = `statement_${new Date().toISOString().split('T')[0]}.csv`;
+                                        link.click();
+                                        window.URL.revokeObjectURL(url);
+                                        showSuccess('Statement downloaded!');
+                                    } catch (error) {
+                                        showError('Failed to download');
+                                    }
+                                }}
+                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+                            >
+                                📊 CSV
+                            </button>
+                        </div>
+                    </div>
 
                     {transactions.length === 0 ? (
                         <div className="text-center py-8 text-gray-500">

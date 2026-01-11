@@ -16,6 +16,7 @@ import { WithdrawMoney } from "./pages/WithdrawMoney";
 import { TransactionHistory } from "./pages/TransactionHistory";
 import { ScanPay } from "./pages/ScanPay";
 import { Profile } from "./pages/Profile";
+import { Beneficiaries } from "./pages/Beneficiaries";
 import { setTokenGetter } from "./utils/api";
 
 // Component to set up token getter
@@ -70,6 +71,9 @@ function App() {
           } />
           <Route path="/profile" element={
             <ProtectedRoute><Profile /></ProtectedRoute>
+          } />
+          <Route path="/beneficiaries" element={
+            <ProtectedRoute><Beneficiaries /></ProtectedRoute>
           } />
         </Routes>
       </AuthSetup>
