@@ -20,7 +20,12 @@ router.get("/balance", authMiddleware, async (req, res) => {
 router.post("/transfer", authMiddleware, async (req, res) => {
     const { amount, to } = req.body;
 
-    // Validate transaction limits first (before starting DB transaction)
+    // Validate amount is greater than 0
+    if (!amount || amount <= 0) {
+        return res.status(400).json({ message: "Amount must be greater than 0" });
+    }
+
+    // Validate transaction limits (before starting DB transaction)
     const limitCheck = await validateTransactionLimits(req.userId, amount);
     if (!limitCheck.allowed) {
         return res.status(400).json({ message: limitCheck.reason });

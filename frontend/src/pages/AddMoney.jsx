@@ -5,6 +5,7 @@ import { Appbar } from "../components/Appbar";
 import { Heading } from "../components/Heading";
 import { InputBox } from "../components/InputBox";
 import { SubHeading } from "../components/SubHeading";
+import { showSuccess, showError } from '../utils/toast';
 
 export const AddMoney = () => {
     const [amount, setAmount] = useState("");
@@ -27,7 +28,7 @@ export const AddMoney = () => {
 
     const handleAddMoney = async () => {
         if (!amount || Number(amount) <= 0) {
-            alert("Please enter a valid amount");
+            showError("Please enter a valid amount");
             return;
         }
 
@@ -36,7 +37,7 @@ export const AddMoney = () => {
         // Load Razorpay script
         const scriptLoaded = await loadRazorpayScript();
         if (!scriptLoaded) {
-            alert("Failed to load payment gateway. Please try again.");
+            showError("Failed to load payment gateway. Please try again.");
             setLoading(false);
             return;
         }
@@ -70,11 +71,11 @@ export const AddMoney = () => {
                                 amount: Number(amount)
                             }
                         );
-                        alert("💰 Money added successfully!");
+                        showSuccess("💰 Money added successfully!");
                         navigate("/dashboard");
                     } catch (error) {
                         console.error("Payment verification failed:", error);
-                        alert("Payment verification failed. Please contact support.");
+                        showError("Payment verification failed. Please contact support.");
                     }
                 },
                 prefill: {
@@ -94,7 +95,7 @@ export const AddMoney = () => {
             razorpay.open();
         } catch (error) {
             console.error("Failed to create order:", error);
-            alert(error.response?.data?.message || "Failed to initiate payment");
+            showError(error.response?.data?.message || "Failed to initiate payment");
             setLoading(false);
         }
     };

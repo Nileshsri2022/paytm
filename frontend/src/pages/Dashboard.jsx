@@ -4,6 +4,7 @@ import { useUser } from "@clerk/clerk-react"
 import { Appbar } from "../components/Appbar"
 import { Users } from "../components/Users"
 import { QRGenerator } from "../components/QRGenerator"
+import { SkeletonDashboard } from "../components/Skeleton"
 import api from "../utils/api"
 
 // Helper function to decode JWT token
@@ -103,6 +104,7 @@ export const Dashboard = () => {
     const [recentTransactions, setRecentTransactions] = useState([]);
     const [currentUserId, setCurrentUserId] = useState(null);
     const [showQRGenerator, setShowQRGenerator] = useState(false);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { user } = useUser();
 
@@ -134,15 +136,31 @@ export const Dashboard = () => {
     };
 
     useEffect(() => {
-        fetchBalance();
-        fetchRecentTransactions();
-        fetchCurrentUserId();
+        const loadData = async () => {
+            setLoading(true);
+            await Promise.all([
+                fetchBalance(),
+                fetchRecentTransactions(),
+                fetchCurrentUserId()
+            ]);
+            setLoading(false);
+        };
+        loadData();
     }, []);
 
     useEffect(() => {
         window.refreshBalance = fetchBalance;
         return () => { delete window.refreshBalance; };
     }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+                <Appbar />
+                <SkeletonDashboard />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useUser, useClerk } from "@clerk/clerk-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 // Generate consistent color based on name
 const getAvatarColor = (name) => {
@@ -32,7 +33,7 @@ export const Appbar = () => {
     };
 
     return (
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
             <div className="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center">
                 <div
                     className="flex items-center gap-2 cursor-pointer"
@@ -45,20 +46,21 @@ export const Appbar = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <span className="text-gray-600 text-sm hidden md:block">
-                        Welcome, <span className="font-medium text-gray-900">{userName}</span>
+                    <span className="text-gray-600 dark:text-gray-300 text-sm hidden md:block">
+                        Welcome, <span className="font-medium text-gray-900 dark:text-white">{userName}</span>
                     </span>
 
                     <div className="flex items-center gap-2">
+                        <ThemeToggle />
                         <button
                             onClick={() => navigate("/profile")}
-                            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                            className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-800 rounded-lg transition-all"
                         >
                             Profile
                         </button>
                         <button
                             onClick={handleLogout}
-                            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800 rounded-lg transition-all"
                         >
                             Sign Out
                         </button>

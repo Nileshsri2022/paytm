@@ -5,6 +5,7 @@ import { Appbar } from "../components/Appbar";
 import { Heading } from "../components/Heading";
 import { InputBox } from "../components/InputBox";
 import { SubHeading } from "../components/SubHeading";
+import { showSuccess, showError } from '../utils/toast';
 
 export const WithdrawMoney = () => {
     const [amount, setAmount] = useState("");
@@ -37,7 +38,7 @@ export const WithdrawMoney = () => {
 
     const handleLinkBank = async () => {
         if (!accountNumber || !ifscCode || !accountHolderName) {
-            alert("Please fill in all bank details");
+            showError("Please fill in all bank details");
             return;
         }
 
@@ -52,11 +53,11 @@ export const WithdrawMoney = () => {
                 }
             );
 
-            alert("✅ Bank account linked successfully!");
+            showSuccess("✅ Bank account linked successfully!");
             setHasBankLinked(true);
         } catch (error) {
             console.error("Failed to link bank:", error);
-            alert(error.response?.data?.message || "Failed to link bank account");
+            showError(error.response?.data?.message || "Failed to link bank account");
         } finally {
             setLinkingBank(false);
         }
@@ -64,12 +65,12 @@ export const WithdrawMoney = () => {
 
     const handleWithdraw = async () => {
         if (!amount || Number(amount) <= 0) {
-            alert("Please enter a valid amount");
+            showError("Please enter a valid amount");
             return;
         }
 
         if (Number(amount) > userBalance) {
-            alert("Insufficient balance");
+            showError("Insufficient balance");
             return;
         }
 
@@ -80,11 +81,11 @@ export const WithdrawMoney = () => {
                 { amount: Number(amount) }
             );
 
-            alert(`💸 ${response.data.message}`);
+            showSuccess(`💸 ${response.data.message}`);
             navigate("/dashboard");
         } catch (error) {
             console.error("Failed to withdraw:", error);
-            alert(error.response?.data?.message || "Withdrawal failed");
+            showError(error.response?.data?.message || "Withdrawal failed");
         } finally {
             setLoading(false);
         }

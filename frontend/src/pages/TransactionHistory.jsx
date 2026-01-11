@@ -3,6 +3,8 @@ import api from "../utils/api";
 import { Appbar } from "../components/Appbar";
 import { Heading } from "../components/Heading";
 import { SubHeading } from "../components/SubHeading";
+import { SkeletonTransactionList } from "../components/Skeleton";
+import { showError } from "../utils/toast";
 
 // Helper function to decode JWT token
 const decodeJWT = (token) => {
@@ -35,7 +37,7 @@ export const TransactionHistory = () => {
                 setCurrentUserId(userRes.data.user?._id);
             } catch (error) {
                 console.error("Failed to fetch transactions:", error);
-                alert("Failed to fetch transaction history");
+                showError("Failed to fetch transaction history");
             } finally {
                 setLoading(false);
             }
@@ -88,10 +90,12 @@ export const TransactionHistory = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-100">
+            <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
                 <Appbar />
-                <div className="flex justify-center items-center p-8">
-                    <div className="text-center">Loading transaction history...</div>
+                <div className="p-8 max-w-4xl mx-auto">
+                    <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-2 animate-pulse" />
+                    <div className="h-4 w-64 bg-gray-200 dark:bg-gray-700 rounded mb-6 animate-pulse" />
+                    <SkeletonTransactionList count={6} />
                 </div>
             </div>
         );
@@ -137,8 +141,8 @@ export const TransactionHistory = () => {
                                         </div>
                                         <div className="text-right">
                                             <div className={`font-bold text-lg ${transaction.type === 'deposit' || (transaction.type === 'transfer' && currentUserId && transaction.toUserId._id === currentUserId)
-                                                    ? 'text-green-600'
-                                                    : 'text-red-600'
+                                                ? 'text-green-600'
+                                                : 'text-red-600'
                                                 }`}>
                                                 {transaction.type === 'deposit' || (transaction.type === 'transfer' && currentUserId && transaction.toUserId._id === currentUserId)
                                                     ? '+' : '-'

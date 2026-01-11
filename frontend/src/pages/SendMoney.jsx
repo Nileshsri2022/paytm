@@ -1,6 +1,7 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import api from "../utils/api";
 import { useState, useEffect } from 'react';
+import { showSuccess, showError, showInfo } from '../utils/toast';
 
 export const SendMoney = () => {
     const [searchParams] = useSearchParams();
@@ -12,7 +13,7 @@ export const SendMoney = () => {
     // Redirect if no recipient specified
     useEffect(() => {
         if (!id || !name) {
-            alert("Please select a recipient from the dashboard");
+            showInfo("Please select a recipient from the dashboard");
             navigate('/dashboard');
         }
     }, [id, name, navigate]);
@@ -56,16 +57,20 @@ export const SendMoney = () => {
                             />
                         </div>
                         <button onClick={async () => {
+                            if (!amount || Number(amount) <= 0) {
+                                showError("Please enter an amount greater than 0");
+                                return;
+                            }
                             try {
                                 const response = await api.post("/account/transfer", {
                                     to: id,
                                     amount: Number(amount)
                                 });
-                                alert("Transfer successful!");
+                                showSuccess("Transfer successful!");
                                 navigate('/dashboard');
                             } catch (error) {
                                 console.error("Transfer failed:", error);
-                                alert(error.response?.data?.message || "Transfer failed");
+                                showError(error.response?.data?.message || "Transfer failed");
                             }
                         }} className="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
                             Initiate Transfer

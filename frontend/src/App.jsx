@@ -5,6 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { SignedIn, SignedOut, useAuth } from "@clerk/clerk-react";
+import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import { Signup } from "./pages/Signup";
 import { Signin } from "./pages/Signin";
@@ -43,6 +44,7 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <BrowserRouter>
+      <Toaster />
       <AuthSetup>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
