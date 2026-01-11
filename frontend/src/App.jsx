@@ -4,6 +4,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import { SignedIn, SignedOut, useAuth } from "@clerk/clerk-react";
+import { useEffect } from "react";
 import { Signup } from "./pages/Signup";
 import { Signin } from "./pages/Signin";
 import { Dashboard } from "./pages/Dashboard";
@@ -13,26 +15,64 @@ import { WithdrawMoney } from "./pages/WithdrawMoney";
 import { TransactionHistory } from "./pages/TransactionHistory";
 import { ScanPay } from "./pages/ScanPay";
 import { Profile } from "./pages/Profile";
+import { setTokenGetter } from "./utils/api";
+
+// Component to set up token getter
+const AuthSetup = ({ children }) => {
+  const { getToken } = useAuth();
+
+  useEffect(() => {
+    setTokenGetter(getToken);
+  }, [getToken]);
+
+  return children;
+};
+
+// Protected route wrapper
+const ProtectedRoute = ({ children }) => {
+  return (
+    <>
+      <SignedIn>{children}</SignedIn>
+      <SignedOut>
+        <Navigate to="/signin" replace />
+      </SignedOut>
+    </>
+  );
+};
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthSetup>
         <Routes>
-          <Route path="/" element={<Navigate to="/signin" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/send" element={<SendMoney />} />
-          <Route path="/add-money" element={<AddMoney />} />
-          <Route path="/withdraw" element={<WithdrawMoney />} />
-          <Route path="/transactions" element={<TransactionHistory />} />
-          <Route path="/scan-pay" element={<ScanPay />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute><Dashboard /></ProtectedRoute>
+          } />
+          <Route path="/send" element={
+            <ProtectedRoute><SendMoney /></ProtectedRoute>
+          } />
+          <Route path="/add-money" element={
+            <ProtectedRoute><AddMoney /></ProtectedRoute>
+          } />
+          <Route path="/withdraw" element={
+            <ProtectedRoute><WithdrawMoney /></ProtectedRoute>
+          } />
+          <Route path="/transactions" element={
+            <ProtectedRoute><TransactionHistory /></ProtectedRoute>
+          } />
+          <Route path="/scan-pay" element={
+            <ProtectedRoute><ScanPay /></ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute><Profile /></ProtectedRoute>
+          } />
         </Routes>
-      </BrowserRouter>
-    </>
-  )
+      </AuthSetup>
+    </BrowserRouter>
+  );
 }
 
 export default App

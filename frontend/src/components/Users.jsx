@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../utils/api";
 
 // Generate consistent color based on name
 const getAvatarColor = (name) => {
@@ -23,20 +23,19 @@ export const Users = () => {
 
     // Fetch current user ID
     useEffect(() => {
-        axios.get("http://localhost:3000/api/v1/user/me", {
-            headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-        }).then(response => {
+        api.get("/user/me").then(response => {
             setCurrentUserId(response.data.user?._id);
         }).catch(err => console.error("Failed to get current user:", err));
     }, []);
 
     // Fetch app users
     useEffect(() => {
-        axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + filter)
+        api.get("/user/bulk?filter=" + filter)
             .then(response => {
                 setUsers(response.data.user)
             });
     }, [filter]);
+
 
     // Check Google connection status on mount
     useEffect(() => {
@@ -52,9 +51,7 @@ export const Users = () => {
 
     const checkGoogleStatus = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/v1/google/status", {
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
+            const response = await api.get("/google/status");
             setGoogleConnected(response.data.connected);
             if (response.data.connected) {
                 fetchGoogleContacts();
@@ -67,9 +64,7 @@ export const Users = () => {
     const handleImportContacts = async () => {
         setImporting(true);
         try {
-            const response = await axios.get("http://localhost:3000/api/v1/google/auth", {
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
+            const response = await api.get("/google/auth");
             // Redirect to Google OAuth
             window.location.href = response.data.authUrl;
         } catch (error) {
@@ -80,9 +75,7 @@ export const Users = () => {
 
     const fetchGoogleContacts = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/v1/google/contacts", {
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
+            const response = await api.get("/google/contacts");
             console.log("📥 Received contacts:", response.data.contacts?.length, response.data.contacts);
             setGoogleContacts(response.data.contacts || []);
             setGoogleConnected(true);

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useUser } from "@clerk/clerk-react"
 import { Appbar } from "../components/Appbar"
 import { Users } from "../components/Users"
 import { QRGenerator } from "../components/QRGenerator"
-import axios from "axios"
+import api from "../utils/api"
 
 // Helper function to decode JWT token
 const decodeJWT = (token) => {
@@ -103,12 +104,11 @@ export const Dashboard = () => {
     const [currentUserId, setCurrentUserId] = useState(null);
     const [showQRGenerator, setShowQRGenerator] = useState(false);
     const navigate = useNavigate();
+    const { user } = useUser();
 
     const fetchBalance = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/v1/account/balance", {
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
+            const response = await api.get("/account/balance");
             setBalance(response.data.balance);
         } catch (error) {
             console.error("Failed to fetch balance:", error);
@@ -117,23 +117,26 @@ export const Dashboard = () => {
 
     const fetchRecentTransactions = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/v1/account/transactions", {
-                headers: { Authorization: "Bearer " + localStorage.getItem("token") }
-            });
+            const response = await api.get("/account/transactions");
             setRecentTransactions(response.data.transactions.slice(0, 5));
         } catch (error) {
             console.error("Failed to fetch recent transactions:", error);
         }
     };
 
+    const fetchCurrentUserId = async () => {
+        try {
+            const response = await api.get("/user/me");
+            setCurrentUserId(response.data.user?._id);
+        } catch (error) {
+            console.error("Failed to fetch user:", error);
+        }
+    };
+
     useEffect(() => {
         fetchBalance();
         fetchRecentTransactions();
-        const token = localStorage.getItem("token");
-        if (token) {
-            const decoded = decodeJWT(token);
-            if (decoded?.userId) setCurrentUserId(decoded.userId);
-        }
+        fetchCurrentUserId();
     }, []);
 
     useEffect(() => {

@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useUser, useClerk } from "@clerk/clerk-react";
 
 // Generate consistent color based on name
 const getAvatarColor = (name) => {
@@ -20,33 +19,17 @@ const getAvatarColor = (name) => {
 
 export const Appbar = () => {
     const navigate = useNavigate();
-    const [userName, setUserName] = useState("");
-    const [userInitial, setUserInitial] = useState("U");
+    const { user } = useUser();
+    const { signOut } = useClerk();
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await axios.get("http://localhost:3000/api/v1/user/me", {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token")
-                    }
-                });
-                const user = response.data.user;
-                setUserName(user.firstName);
-                setUserInitial(user.firstName?.[0]?.toUpperCase() || "U");
-            } catch (error) {
-                console.error("Failed to fetch user:", error);
-            }
-        };
-        fetchUser();
-    }, []);
+    const userName = user?.firstName || "User";
+    const userInitial = userName?.[0]?.toUpperCase() || "U";
+    const avatarGradient = getAvatarColor(userName);
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
+    const handleLogout = async () => {
+        await signOut();
         navigate("/signin");
     };
-
-    const avatarGradient = getAvatarColor(userName);
 
     return (
         <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -63,7 +46,7 @@ export const Appbar = () => {
 
                 <div className="flex items-center gap-4">
                     <span className="text-gray-600 text-sm hidden md:block">
-                        Welcome, <span className="font-medium text-gray-900">{userName || "User"}</span>
+                        Welcome, <span className="font-medium text-gray-900">{userName}</span>
                     </span>
 
                     <div className="flex items-center gap-2">

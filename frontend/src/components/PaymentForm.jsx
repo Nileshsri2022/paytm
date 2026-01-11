@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 export const PaymentForm = ({ qrData, onPaymentSuccess, onCancel }) => {
     const [amount, setAmount] = useState(qrData.amount || '');
@@ -25,24 +25,16 @@ export const PaymentForm = ({ qrData, onPaymentSuccess, onCancel }) => {
 
         try {
             // First validate the payment
-            const validationResponse = await axios.post("http://localhost:3000/api/v1/account/scan-pay", {
+            const validationResponse = await api.post("/account/scan-pay", {
                 qrData: qrData,
                 amount: parseFloat(amount)
-            }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
             });
 
             // If validation successful, confirm payment
-            const confirmResponse = await axios.post("http://localhost:3000/api/v1/account/confirm-payment", {
+            const confirmResponse = await api.post("/account/confirm-payment", {
                 recipientId: qrData.userId,
                 amount: parseFloat(amount),
                 description: `Scan & Pay to ${qrData.userName}`
-            }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
             });
 
             onPaymentSuccess(confirmResponse.data);

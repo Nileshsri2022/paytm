@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 export const QRGenerator = ({ amount, onClose }) => {
     const [qrCodeUrl, setQrCodeUrl] = useState('');
@@ -16,12 +16,8 @@ export const QRGenerator = ({ amount, onClose }) => {
 
         try {
             // Get QR data from backend
-            const response = await axios.post("http://localhost:3000/api/v1/account/generate-qr", {
+            const response = await api.post("/account/generate-qr", {
                 amount: amount || null
-            }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
             });
 
             const qrData = response.data.qrData;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
 import { Appbar } from "../components/Appbar";
 import { Heading } from "../components/Heading";
 import { InputBox } from "../components/InputBox";
@@ -43,10 +43,9 @@ export const AddMoney = () => {
 
         try {
             // Create order on backend
-            const orderResponse = await axios.post(
-                "http://localhost:3000/api/v1/razorpay/create-order",
-                { amount: Number(amount) },
-                { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
+            const orderResponse = await api.post(
+                "/razorpay/create-order",
+                { amount: Number(amount) }
             );
 
             const { orderId, keyId } = orderResponse.data;
@@ -62,15 +61,14 @@ export const AddMoney = () => {
                 handler: async function (response) {
                     try {
                         // Verify payment on backend
-                        await axios.post(
-                            "http://localhost:3000/api/v1/razorpay/verify-payment",
+                        await api.post(
+                            "/razorpay/verify-payment",
                             {
                                 razorpay_order_id: response.razorpay_order_id,
                                 razorpay_payment_id: response.razorpay_payment_id,
                                 razorpay_signature: response.razorpay_signature,
                                 amount: Number(amount)
-                            },
-                            { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
+                            }
                         );
                         alert("💰 Money added successfully!");
                         navigate("/dashboard");
@@ -119,8 +117,8 @@ export const AddMoney = () => {
                                     key={amt}
                                     onClick={() => setAmount(amt.toString())}
                                     className={`py-2 px-4 rounded-lg text-sm font-medium transition-all ${amount === amt.toString()
-                                            ? "bg-indigo-600 text-white"
-                                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                        ? "bg-indigo-600 text-white"
+                                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                         }`}
                                 >
                                     ₹{amt}
@@ -146,8 +144,8 @@ export const AddMoney = () => {
                             onClick={handleAddMoney}
                             disabled={loading || !amount}
                             className={`w-full py-4 rounded-xl text-lg font-semibold transition-all ${loading || !amount
-                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                    : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:-translate-y-0.5"
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:-translate-y-0.5"
                                 }`}
                         >
                             {loading ? "Processing..." : `Add ₹${amount || "0"}`}

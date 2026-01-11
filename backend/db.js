@@ -34,6 +34,12 @@ const userSchema = new mongoose.Schema({
         trim: true,
         maxLength: 50
     },
+    // Clerk integration
+    clerkId: {
+        type: String,
+        unique: true,
+        sparse: true  // Allows null values (for non-Clerk users)
+    },
     // RazorpayX fields
     razorpayContactId: String,
     razorpayFundAccountId: String,

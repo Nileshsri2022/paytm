@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
 import { Appbar } from "../components/Appbar";
 import { Button } from "../components/Button";
 import { InputBox } from "../components/InputBox";
@@ -30,11 +30,7 @@ export const Profile = () => {
 
     const fetchProfile = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/v1/user/me", {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
-            });
+            const response = await api.get("/user/me");
             setUser(response.data.user);
             setFirstName(response.data.user.firstName);
             setLastName(response.data.user.lastName);
@@ -52,13 +48,9 @@ export const Profile = () => {
         setSaving(true);
         setMessage("");
         try {
-            await axios.put("http://localhost:3000/api/v1/user", {
+            await api.put("/user", {
                 firstName,
                 lastName
-            }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
             });
             setMessage("Profile updated successfully!");
             setTimeout(() => setMessage(""), 3000);
@@ -82,13 +74,9 @@ export const Profile = () => {
         setChangingPassword(true);
         setPasswordMessage("");
         try {
-            await axios.post("http://localhost:3000/api/v1/user/change-password", {
+            await api.post("/user/change-password", {
                 currentPassword,
                 newPassword
-            }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                }
             });
             setPasswordMessage("Password changed successfully!");
             setCurrentPassword("");

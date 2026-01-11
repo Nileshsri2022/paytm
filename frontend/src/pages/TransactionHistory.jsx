@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { Appbar } from "../components/Appbar";
 import { Heading } from "../components/Heading";
 import { SubHeading } from "../components/SubHeading";
@@ -27,12 +27,12 @@ export const TransactionHistory = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/api/v1/account/transactions", {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token")
-                    }
-                });
-                setTransactions(response.data.transactions);
+                const [txRes, userRes] = await Promise.all([
+                    api.get("/account/transactions"),
+                    api.get("/user/me")
+                ]);
+                setTransactions(txRes.data.transactions);
+                setCurrentUserId(userRes.data.user?._id);
             } catch (error) {
                 console.error("Failed to fetch transactions:", error);
                 alert("Failed to fetch transaction history");
@@ -42,15 +42,6 @@ export const TransactionHistory = () => {
         };
 
         fetchTransactions();
-
-        // Extract current user ID from token
-        const token = localStorage.getItem("token");
-        if (token) {
-            const decoded = decodeJWT(token);
-            if (decoded && decoded.userId) {
-                setCurrentUserId(decoded.userId);
-            }
-        }
     }, []);
 
     const formatDate = (dateString) => {
@@ -145,11 +136,10 @@ export const TransactionHistory = () => {
                                             )}
                                         </div>
                                         <div className="text-right">
-                                            <div className={`font-bold text-lg ${
-                                                transaction.type === 'deposit' || (transaction.type === 'transfer' && currentUserId && transaction.toUserId._id === currentUserId)
+                                            <div className={`font-bold text-lg ${transaction.type === 'deposit' || (transaction.type === 'transfer' && currentUserId && transaction.toUserId._id === currentUserId)
                                                     ? 'text-green-600'
                                                     : 'text-red-600'
-                                            }`}>
+                                                }`}>
                                                 {transaction.type === 'deposit' || (transaction.type === 'transfer' && currentUserId && transaction.toUserId._id === currentUserId)
                                                     ? '+' : '-'
                                                 }₹{transaction.amount}
