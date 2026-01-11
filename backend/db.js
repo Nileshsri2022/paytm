@@ -58,6 +58,13 @@ const userSchema = new mongoose.Schema({
         accountName: String,
         ifsc: String,
         accountNumber: String // Last 4 digits only
+    },
+    // Transaction PIN
+    transactionPin: {
+        hash: String,  // bcrypt hashed PIN
+        isSet: { type: Boolean, default: false },
+        failedAttempts: { type: Number, default: 0 },
+        lockedUntil: Date
     }
 });
 

@@ -18,12 +18,49 @@ router.get("/balance", authMiddleware, async (req, res) => {
 });
 
 router.post("/transfer", authMiddleware, async (req, res) => {
-    const { amount, to } = req.body;
+    const { amount, to, pin } = req.body;
 
     // Validate amount is greater than 0
     if (!amount || amount <= 0) {
         return res.status(400).json({ message: "Amount must be greater than 0" });
     }
+
+    // Verify Transaction PIN
+    const user = await User.findById(req.userId);
+    if (!user.transactionPin?.isSet) {
+        return res.status(400).json({ message: "Please set your transaction PIN first", needsPinSetup: true });
+    }
+
+    // Check if locked
+    if (user.transactionPin?.lockedUntil && user.transactionPin.lockedUntil > new Date()) {
+        const mins = Math.ceil((user.transactionPin.lockedUntil - new Date()) / 60000);
+        return res.status(423).json({ message: `Account locked. Try after ${mins} minutes` });
+    }
+
+    if (!pin) {
+        return res.status(400).json({ message: "Transaction PIN required", needsPin: true });
+    }
+
+    const bcrypt = require('bcrypt');
+    const validPin = await bcrypt.compare(pin, user.transactionPin.hash);
+    if (!validPin) {
+        const attempts = (user.transactionPin.failedAttempts || 0) + 1;
+        const update = { 'transactionPin.failedAttempts': attempts };
+        if (attempts >= 3) {
+            update['transactionPin.lockedUntil'] = new Date(Date.now() + 30 * 60 * 1000);
+        }
+        await User.findByIdAndUpdate(req.userId, update);
+        if (attempts >= 3) {
+            return res.status(423).json({ message: 'Too many attempts. Locked for 30 minutes' });
+        }
+        return res.status(400).json({ message: `Incorrect PIN. ${3 - attempts} attempts left` });
+    }
+
+    // Reset failed attempts on success
+    await User.findByIdAndUpdate(req.userId, {
+        'transactionPin.failedAttempts': 0,
+        'transactionPin.lockedUntil': null
+    });
 
     // Validate transaction limits (before starting DB transaction)
     const limitCheck = await validateTransactionLimits(req.userId, amount);

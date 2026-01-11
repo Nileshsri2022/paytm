@@ -19,6 +19,7 @@ import { Profile } from "./pages/Profile";
 import { Beneficiaries } from "./pages/Beneficiaries";
 import { ScheduledPayments } from "./pages/ScheduledPayments";
 import { RequestMoney } from "./pages/RequestMoney";
+import { ChangePin } from "./pages/ChangePin";
 import { setTokenGetter } from "./utils/api";
 
 // Component to set up token getter
@@ -82,6 +83,9 @@ function App() {
           } />
           <Route path="/requests" element={
             <ProtectedRoute><RequestMoney /></ProtectedRoute>
+          } />
+          <Route path="/change-pin" element={
+            <ProtectedRoute><ChangePin /></ProtectedRoute>
           } />
         </Routes>
       </AuthSetup>

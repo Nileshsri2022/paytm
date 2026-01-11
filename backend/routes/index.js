@@ -9,6 +9,7 @@ const beneficiaryRouter = require("./beneficiary");
 const statementRouter = require("./statement");
 const scheduledRouter = require("./scheduled");
 const requestsRouter = require("./requests");
+const pinRouter = require("./pin");
 
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.use("/beneficiaries", beneficiaryRouter);
 router.use("/statement", statementRouter);
 router.use("/scheduled", scheduledRouter);
 router.use("/requests", requestsRouter);
+router.use("/pin", pinRouter);
 
 module.exports = router;
