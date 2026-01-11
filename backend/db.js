@@ -195,16 +195,54 @@ const scheduledPaymentSchema = new mongoose.Schema({
 
 scheduledPaymentSchema.index({ status: 1, nextRunDate: 1 });
 
+// Payment Request Schema - request money from others
+const paymentRequestSchema = new mongoose.Schema({
+    fromUserId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true // Requester
+    },
+    toUserId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true // Who should pay
+    },
+    amount: {
+        type: Number,
+        required: true,
+        min: 1
+    },
+    message: {
+        type: String,
+        maxLength: 200
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'paid', 'declined', 'expired'],
+        default: 'pending'
+    },
+    expiresAt: {
+        type: Date,
+        default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+    }
+}, {
+    timestamps: true
+});
+
+paymentRequestSchema.index({ toUserId: 1, status: 1 });
+
 const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
 const Transaction = mongoose.model('Transaction', transactionSchema);
 const Beneficiary = mongoose.model('Beneficiary', beneficiarySchema);
 const ScheduledPayment = mongoose.model('ScheduledPayment', scheduledPaymentSchema);
+const PaymentRequest = mongoose.model('PaymentRequest', paymentRequestSchema);
 
 module.exports = {
     User,
     Account,
     Transaction,
     Beneficiary,
-    ScheduledPayment
+    ScheduledPayment,
+    PaymentRequest
 };

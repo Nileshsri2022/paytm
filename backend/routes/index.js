@@ -8,6 +8,7 @@ const securityRouter = require("./security");
 const beneficiaryRouter = require("./beneficiary");
 const statementRouter = require("./statement");
 const scheduledRouter = require("./scheduled");
+const requestsRouter = require("./requests");
 
 const router = express.Router();
 
@@ -19,5 +20,6 @@ router.use("/security", securityRouter);
 router.use("/beneficiaries", beneficiaryRouter);
 router.use("/statement", statementRouter);
 router.use("/scheduled", scheduledRouter);
+router.use("/requests", requestsRouter);
 
 module.exports = router;

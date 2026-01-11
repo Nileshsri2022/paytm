@@ -18,6 +18,7 @@ import { ScanPay } from "./pages/ScanPay";
 import { Profile } from "./pages/Profile";
 import { Beneficiaries } from "./pages/Beneficiaries";
 import { ScheduledPayments } from "./pages/ScheduledPayments";
+import { RequestMoney } from "./pages/RequestMoney";
 import { setTokenGetter } from "./utils/api";
 
 // Component to set up token getter
@@ -78,6 +79,9 @@ function App() {
           } />
           <Route path="/scheduled" element={
             <ProtectedRoute><ScheduledPayments /></ProtectedRoute>
+          } />
+          <Route path="/requests" element={
+            <ProtectedRoute><RequestMoney /></ProtectedRoute>
           } />
         </Routes>
       </AuthSetup>
