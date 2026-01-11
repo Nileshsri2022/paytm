@@ -42,7 +42,7 @@ const payoutLimiter = rateLimit({
 });
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: true,  // Allow all origins
     credentials: true
 }));
 app.use(express.json());
