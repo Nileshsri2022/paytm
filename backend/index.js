@@ -55,7 +55,13 @@ app.use("/api/v1/razorpay/payout", payoutLimiter);
 
 app.use("/api/v1", rootRouter);
 
+// Start scheduled payments processor
+const { startScheduler } = require('./services/scheduler');
+
 app.listen(3000, () => {
     console.log("🚀 Server running on port 3000");
     console.log("🔒 Rate limiting enabled for auth, transfer, and payout routes");
+
+    // Start the scheduler for automated payments
+    startScheduler();
 });

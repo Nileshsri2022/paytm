@@ -146,14 +146,65 @@ const beneficiarySchema = new mongoose.Schema({
 // Prevent duplicate beneficiaries
 beneficiarySchema.index({ userId: 1, beneficiaryId: 1 }, { unique: true });
 
+// Scheduled Payment Schema
+const scheduledPaymentSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    beneficiaryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true,
+        min: 1
+    },
+    description: {
+        type: String,
+        default: 'Scheduled payment'
+    },
+    frequency: {
+        type: String,
+        enum: ['once', 'daily', 'weekly', 'monthly'],
+        default: 'once'
+    },
+    nextRunDate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date
+    },
+    status: {
+        type: String,
+        enum: ['active', 'paused', 'completed', 'failed'],
+        default: 'active'
+    },
+    lastRunDate: Date,
+    runCount: {
+        type: Number,
+        default: 0
+    }
+}, {
+    timestamps: true
+});
+
+scheduledPaymentSchema.index({ status: 1, nextRunDate: 1 });
+
 const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
 const Transaction = mongoose.model('Transaction', transactionSchema);
 const Beneficiary = mongoose.model('Beneficiary', beneficiarySchema);
+const ScheduledPayment = mongoose.model('ScheduledPayment', scheduledPaymentSchema);
 
 module.exports = {
     User,
     Account,
     Transaction,
-    Beneficiary
+    Beneficiary,
+    ScheduledPayment
 };

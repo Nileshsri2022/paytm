@@ -17,6 +17,7 @@ import { TransactionHistory } from "./pages/TransactionHistory";
 import { ScanPay } from "./pages/ScanPay";
 import { Profile } from "./pages/Profile";
 import { Beneficiaries } from "./pages/Beneficiaries";
+import { ScheduledPayments } from "./pages/ScheduledPayments";
 import { setTokenGetter } from "./utils/api";
 
 // Component to set up token getter
@@ -74,6 +75,9 @@ function App() {
           } />
           <Route path="/beneficiaries" element={
             <ProtectedRoute><Beneficiaries /></ProtectedRoute>
+          } />
+          <Route path="/scheduled" element={
+            <ProtectedRoute><ScheduledPayments /></ProtectedRoute>
           } />
         </Routes>
       </AuthSetup>
