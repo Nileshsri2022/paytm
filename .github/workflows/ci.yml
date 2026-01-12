@@ -44,10 +44,13 @@ jobs:
         with:
           node-version: '18'
       
-      - name: Install dependencies
-        run: npm install
+      - name: Clean install (fix rollup platform issue)
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
       
       - name: Build
         run: npm run build
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+
