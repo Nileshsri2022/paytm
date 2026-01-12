@@ -195,6 +195,7 @@ export const Dashboard = () => {
                         <QuickAction icon="📅" label="Scheduled" onClick={() => navigate("/scheduled")} />
                         <QuickAction icon="💸" label="Request" onClick={() => navigate("/requests")} />
                         <QuickAction icon="✂️" label="Split Bill" onClick={() => navigate("/split")} />
+                        <QuickAction icon="📊" label="Analytics" onClick={() => navigate("/analytics")} />
                     </div>
                 </div>
 

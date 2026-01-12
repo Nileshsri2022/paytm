@@ -22,6 +22,7 @@ import { RequestMoney } from "./pages/RequestMoney";
 import { ChangePin } from "./pages/ChangePin";
 import { SplitBill } from "./pages/SplitBill";
 import { SetupPIN } from "./pages/SetupPIN";
+import { Analytics } from "./pages/Analytics";
 import { setTokenGetter } from "./utils/api";
 
 // Component to set up token getter
@@ -94,6 +95,9 @@ function App() {
           } />
           <Route path="/setup-pin" element={
             <ProtectedRoute><SetupPIN /></ProtectedRoute>
+          } />
+          <Route path="/analytics" element={
+            <ProtectedRoute><Analytics /></ProtectedRoute>
           } />
         </Routes>
       </AuthSetup>

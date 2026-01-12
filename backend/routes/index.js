@@ -12,6 +12,7 @@ const requestsRouter = require("./requests");
 const pinRouter = require("./pin");
 const splitbillRouter = require("./splitbill");
 const notificationsRouter = require("./notifications");
+const analyticsRouter = require("./analytics");
 
 const router = express.Router();
 
@@ -27,5 +28,6 @@ router.use("/requests", requestsRouter);
 router.use("/pin", pinRouter);
 router.use("/splitbill", splitbillRouter);
 router.use("/notifications", notificationsRouter);
+router.use("/analytics", analyticsRouter);
 
 module.exports = router;
