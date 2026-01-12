@@ -10,6 +10,7 @@ const statementRouter = require("./statement");
 const scheduledRouter = require("./scheduled");
 const requestsRouter = require("./requests");
 const pinRouter = require("./pin");
+const splitbillRouter = require("./splitbill");
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use("/statement", statementRouter);
 router.use("/scheduled", scheduledRouter);
 router.use("/requests", requestsRouter);
 router.use("/pin", pinRouter);
+router.use("/splitbill", splitbillRouter);
 
 module.exports = router;

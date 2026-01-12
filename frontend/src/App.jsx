@@ -20,6 +20,7 @@ import { Beneficiaries } from "./pages/Beneficiaries";
 import { ScheduledPayments } from "./pages/ScheduledPayments";
 import { RequestMoney } from "./pages/RequestMoney";
 import { ChangePin } from "./pages/ChangePin";
+import { SplitBill } from "./pages/SplitBill";
 import { setTokenGetter } from "./utils/api";
 
 // Component to set up token getter
@@ -86,6 +87,9 @@ function App() {
           } />
           <Route path="/change-pin" element={
             <ProtectedRoute><ChangePin /></ProtectedRoute>
+          } />
+          <Route path="/split" element={
+            <ProtectedRoute><SplitBill /></ProtectedRoute>
           } />
         </Routes>
       </AuthSetup>

@@ -238,12 +238,58 @@ const paymentRequestSchema = new mongoose.Schema({
 
 paymentRequestSchema.index({ toUserId: 1, status: 1 });
 
+// Split Bill Schema - split expenses among friends
+const splitBillSchema = new mongoose.Schema({
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    title: {
+        type: String,
+        required: true,
+        maxLength: 100
+    },
+    totalAmount: {
+        type: Number,
+        required: true,
+        min: 1
+    },
+    participants: [{
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        amount: {
+            type: Number,
+            required: true
+        },
+        status: {
+            type: String,
+            enum: ['pending', 'paid', 'declined'],
+            default: 'pending'
+        },
+        paidAt: Date
+    }],
+    status: {
+        type: String,
+        enum: ['active', 'settled', 'cancelled'],
+        default: 'active'
+    }
+}, {
+    timestamps: true
+});
+
+splitBillSchema.index({ createdBy: 1, status: 1 });
+
 const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
 const Transaction = mongoose.model('Transaction', transactionSchema);
 const Beneficiary = mongoose.model('Beneficiary', beneficiarySchema);
 const ScheduledPayment = mongoose.model('ScheduledPayment', scheduledPaymentSchema);
 const PaymentRequest = mongoose.model('PaymentRequest', paymentRequestSchema);
+const SplitBill = mongoose.model('SplitBill', splitBillSchema);
 
 module.exports = {
     User,
@@ -251,5 +297,6 @@ module.exports = {
     Transaction,
     Beneficiary,
     ScheduledPayment,
-    PaymentRequest
+    PaymentRequest,
+    SplitBill
 };
