@@ -58,6 +58,28 @@ A production-ready digital wallet application with secure transactions, schedule
 | **Skeleton Loaders** | Smooth loading states |
 | **Google Contacts** | Import contacts from Google |
 
+### ✂️ Split Bill
+| Feature | Description |
+|---------|-------------|
+| **Create Split** | Divide expense among friends |
+| **Pay Your Share** | One-tap payment of your portion |
+| **Reminders** | Nudge friends to pay their share |
+| **Settlement** | Auto-completes when all paid |
+
+### 🔔 Real-time Updates
+| Feature | Description |
+|---------|-------------|
+| **In-App Notifications** | Payment alerts, requests, splits |
+| **Notification Center** | View all, mark read, delete |
+| **Analytics Dashboard** | Spending insights with charts |
+
+### 📱 Progressive Web App
+| Feature | Description |
+|---------|-------------|
+| **Installable** | Add to home screen on mobile |
+| **Offline Support** | Basic caching for assets |
+| **App-like UX** | Standalone mode, no browser UI |
+
 ---
 
 ## 🏗 Architecture
@@ -128,7 +150,51 @@ sequenceDiagram
 ├── @clerk/clerk-react
 ├── react-hot-toast   # Notifications
 ├── html5-qrcode      # QR scanning
-└── qrcode.react      # QR generation
+├── qrcode.react      # QR generation
+└── Recharts          # Analytics charts
+```
+
+### Database Schema
+
+```mermaid
+erDiagram
+    User ||--|| Account : has
+    User ||--o{ Transaction : makes
+    User ||--o{ Beneficiary : saves
+    User ||--o{ ScheduledPayment : creates
+    User ||--o{ PaymentRequest : sends
+    User ||--o{ SplitBill : participates
+    User ||--o{ Notification : receives
+    
+    User {
+        string username
+        string firstName
+        string lastName
+        string clerkId
+        object transactionPin
+        object transactionLimits
+    }
+    
+    Account {
+        ObjectId userId
+        number balance
+    }
+    
+    Transaction {
+        ObjectId fromUserId
+        ObjectId toUserId
+        number amount
+        string type
+        string status
+    }
+    
+    Notification {
+        ObjectId userId
+        string type
+        string title
+        string message
+        boolean read
+    }
 ```
 
 ---
@@ -247,6 +313,34 @@ All protected routes require Clerk session token in header.
 | POST | `/pin/set` | Set transaction PIN |
 | POST | `/pin/verify` | Verify PIN |
 | POST | `/pin/reset` | Reset PIN (after OTP) |
+
+### Split Bill
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/splitbill` | List all your splits |
+| POST | `/splitbill` | Create new split |
+| POST | `/splitbill/:id/pay` | Pay your share |
+| POST | `/splitbill/:id/remind` | Send reminder |
+| DELETE | `/splitbill/:id` | Cancel split |
+
+### Notifications
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/notifications` | Get all notifications |
+| GET | `/notifications/count` | Get unread count |
+| PATCH | `/notifications/:id/read` | Mark as read |
+| PATCH | `/notifications/read-all` | Mark all read |
+| DELETE | `/notifications/:id` | Delete notification |
+
+### Analytics
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/analytics?period=week\|month\|year\|all` | Get analytics |
+
+Returns: Monthly breakdown, top recipients, top senders, category spending
 
 ---
 
@@ -405,6 +499,10 @@ graph LR
 - [x] Change PIN via Email OTP
 - [x] QR Scan & Pay
 - [x] Google Contacts Import
+- [x] Split Bill ✂️
+- [x] In-App Notifications 🔔
+- [x] Analytics Dashboard 📊
+- [x] PWA (Installable) 📱
 
 ---
 
