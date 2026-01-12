@@ -44,19 +44,18 @@ export const Beneficiaries = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
             <Appbar />
-            <div className="max-w-4xl mx-auto px-4 py-4 md:p-6">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-5">
-                    <div>
-                        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                            ⭐ Saved Beneficiaries
-                        </h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Quick pay to your favorite recipients
-                        </p>
-                    </div>
+            <div className="max-w-4xl mx-auto px-4 py-4 md:p-6 overflow-x-hidden">
+                {/* Header */}
+                <div className="mb-5">
+                    <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                        ⭐ Saved Beneficiaries
+                    </h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                        Quick pay to your favorites
+                    </p>
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium whitespace-nowrap"
+                        className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium"
                     >
                         + Add from Users
                     </button>
@@ -82,36 +81,41 @@ export const Beneficiaries = () => {
                         {beneficiaries.map((b) => (
                             <div
                                 key={b._id}
-                                className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex items-center justify-between"
+                                className="bg-white dark:bg-gray-800 rounded-xl shadow p-4"
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
-                                        <span className="text-white font-bold text-lg">
-                                            {b.beneficiaryId?.firstName?.[0]?.toUpperCase() || '?'}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <div className="font-semibold text-gray-900 dark:text-white">
-                                            {b.nickname || `${b.beneficiaryId?.firstName} ${b.beneficiaryId?.lastName}`}
+                                <div className="flex items-center justify-between gap-3">
+                                    {/* User Info */}
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                                            <span className="text-white font-bold text-sm md:text-lg">
+                                                {b.beneficiaryId?.firstName?.[0]?.toUpperCase() || '?'}
+                                            </span>
                                         </div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                                            {b.beneficiaryId?.username}
+                                        <div className="min-w-0">
+                                            <div className="font-semibold text-gray-900 dark:text-white text-sm md:text-base truncate">
+                                                {b.nickname || `${b.beneficiaryId?.firstName} ${b.beneficiaryId?.lastName}`}
+                                            </div>
+                                            <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400 truncate">
+                                                {b.beneficiaryId?.username}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => handleQuickPay(b)}
-                                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium"
-                                    >
-                                        ⚡ Pay
-                                    </button>
-                                    <button
-                                        onClick={() => handleRemove(b._id)}
-                                        className="px-3 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg"
-                                    >
-                                        🗑️
-                                    </button>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2 flex-shrink-0">
+                                        <button
+                                            onClick={() => handleQuickPay(b)}
+                                            className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-medium"
+                                        >
+                                            ⚡ Pay
+                                        </button>
+                                        <button
+                                            onClick={() => handleRemove(b._id)}
+                                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg"
+                                        >
+                                            🗑️
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -121,3 +125,4 @@ export const Beneficiaries = () => {
         </div>
     );
 };
+
