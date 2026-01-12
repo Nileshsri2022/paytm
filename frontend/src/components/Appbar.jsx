@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { NotificationBell } from "./NotificationBell";
 
 // Generate consistent color based on name
 const getAvatarColor = (name) => {
@@ -51,6 +52,7 @@ export const Appbar = () => {
                     </span>
 
                     <div className="flex items-center gap-2">
+                        <NotificationBell />
                         <ThemeToggle />
                         <button
                             onClick={() => navigate("/profile")}

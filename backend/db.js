@@ -283,6 +283,41 @@ const splitBillSchema = new mongoose.Schema({
 
 splitBillSchema.index({ createdBy: 1, status: 1 });
 
+// Notification Schema
+const notificationSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ['payment_received', 'payment_sent', 'request_received', 'request_paid',
+            'split_invite', 'split_paid', 'low_balance', 'scheduled_payment', 'general'],
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    data: {
+        // Optional reference data (transactionId, requestId, etc.)
+        type: mongoose.Schema.Types.Mixed
+    },
+    read: {
+        type: Boolean,
+        default: false
+    }
+}, {
+    timestamps: true
+});
+
+notificationSchema.index({ userId: 1, read: 1, createdAt: -1 });
+
 const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
 const Transaction = mongoose.model('Transaction', transactionSchema);
@@ -290,6 +325,7 @@ const Beneficiary = mongoose.model('Beneficiary', beneficiarySchema);
 const ScheduledPayment = mongoose.model('ScheduledPayment', scheduledPaymentSchema);
 const PaymentRequest = mongoose.model('PaymentRequest', paymentRequestSchema);
 const SplitBill = mongoose.model('SplitBill', splitBillSchema);
+const Notification = mongoose.model('Notification', notificationSchema);
 
 module.exports = {
     User,
@@ -298,5 +334,6 @@ module.exports = {
     Beneficiary,
     ScheduledPayment,
     PaymentRequest,
-    SplitBill
+    SplitBill,
+    Notification
 };

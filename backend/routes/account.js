@@ -4,6 +4,7 @@ const { authMiddleware } = require('../middleware');
 const { Account, Transaction, User } = require('../db');
 const { default: mongoose } = require('mongoose');
 const { validateTransactionLimits, recordTransfer } = require('../services/transactionLimits');
+const NotificationService = require('../services/notificationService');
 
 const router = express.Router();
 
@@ -112,6 +113,10 @@ router.post("/transfer", authMiddleware, async (req, res) => {
 
         // Record transfer for daily limit tracking
         await recordTransfer(req.userId, amount);
+
+        // Send notification to recipient
+        const sender = await User.findById(req.userId);
+        NotificationService.paymentReceived(to, sender.firstName || 'Someone', amount);
 
         res.json({
             message: "Transfer successful"

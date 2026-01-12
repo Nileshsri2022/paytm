@@ -167,8 +167,8 @@ export const SplitBill = () => {
                                         type="button"
                                         onClick={() => toggleParticipant(b.beneficiaryId._id)}
                                         className={`px-3 py-1 rounded-full text-sm ${formData.selectedParticipants.includes(b.beneficiaryId._id)
-                                                ? 'bg-indigo-600 text-white'
-                                                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                                            ? 'bg-indigo-600 text-white'
+                                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                                             }`}
                                     >
                                         {b.nickname || b.beneficiaryId.firstName}
@@ -235,8 +235,8 @@ export const SplitBill = () => {
                                                 <p className="text-gray-500">Total: ₹{bill.totalAmount}</p>
                                             </div>
                                             <span className={`px-2 py-1 rounded-full text-xs ${bill.status === 'settled' ? 'bg-green-100 text-green-700' :
-                                                    bill.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                                                        'bg-yellow-100 text-yellow-700'
+                                                bill.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                                                    'bg-yellow-100 text-yellow-700'
                                                 }`}>
                                                 {bill.status}
                                             </span>
