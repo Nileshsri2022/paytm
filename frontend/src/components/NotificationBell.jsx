@@ -109,60 +109,69 @@ export const NotificationBell = () => {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border dark:border-gray-700 z-50 max-h-96 overflow-hidden">
-                    <div className="flex justify-between items-center p-3 border-b dark:border-gray-700">
-                        <h3 className="font-semibold dark:text-white">Notifications</h3>
-                        {unreadCount > 0 && (
-                            <button
-                                onClick={markAllRead}
-                                className="text-xs text-indigo-600 hover:underline"
-                            >
-                                Mark all read
-                            </button>
-                        )}
-                    </div>
+                <>
+                    {/* Backdrop for mobile */}
+                    <div
+                        className="fixed inset-0 bg-black/20 z-40 md:hidden"
+                        onClick={() => setIsOpen(false)}
+                    />
 
-                    <div className="max-h-72 overflow-y-auto">
-                        {loading ? (
-                            <div className="p-4 text-center text-gray-500">Loading...</div>
-                        ) : notifications.length === 0 ? (
-                            <div className="p-8 text-center">
-                                <span className="text-4xl">🔕</span>
-                                <p className="mt-2 text-gray-500">No notifications</p>
-                            </div>
-                        ) : (
-                            notifications.map(n => (
-                                <div
-                                    key={n._id}
-                                    onClick={() => !n.read && markAsRead(n._id)}
-                                    className={`p-3 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer ${!n.read ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                                        }`}
+                    {/* Dropdown */}
+                    <div className="fixed md:absolute left-2 right-2 md:left-auto md:right-0 top-16 md:top-auto md:mt-2 w-auto md:w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border dark:border-gray-700 z-50 max-h-[70vh] md:max-h-96 overflow-hidden">
+                        <div className="flex justify-between items-center p-3 border-b dark:border-gray-700">
+                            <h3 className="font-semibold dark:text-white">Notifications</h3>
+                            {unreadCount > 0 && (
+                                <button
+                                    onClick={markAllRead}
+                                    className="text-xs text-indigo-600 hover:underline"
                                 >
-                                    <div className="flex gap-3">
-                                        <span className="text-xl">{getIcon(n.type)}</span>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-medium text-sm dark:text-white truncate">
-                                                {n.title}
-                                            </p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                                {n.message}
-                                            </p>
-                                            <p className="text-xs text-gray-400 mt-1">
-                                                {timeAgo(n.createdAt)}
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); deleteNotification(n._id); }}
-                                            className="text-gray-400 hover:text-red-500"
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
+                                    Mark all read
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="max-h-[60vh] md:max-h-72 overflow-y-auto">
+                            {loading ? (
+                                <div className="p-4 text-center text-gray-500">Loading...</div>
+                            ) : notifications.length === 0 ? (
+                                <div className="p-8 text-center">
+                                    <span className="text-4xl">🔕</span>
+                                    <p className="mt-2 text-gray-500">No notifications</p>
                                 </div>
-                            ))
-                        )}
+                            ) : (
+                                notifications.map(n => (
+                                    <div
+                                        key={n._id}
+                                        onClick={() => !n.read && markAsRead(n._id)}
+                                        className={`p-3 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer ${!n.read ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                                            }`}
+                                    >
+                                        <div className="flex gap-3">
+                                            <span className="text-xl flex-shrink-0">{getIcon(n.type)}</span>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-medium text-sm dark:text-white truncate">
+                                                    {n.title}
+                                                </p>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                                                    {n.message}
+                                                </p>
+                                                <p className="text-xs text-gray-400 mt-1">
+                                                    {timeAgo(n.createdAt)}
+                                                </p>
+                                            </div>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); deleteNotification(n._id); }}
+                                                className="text-gray-400 hover:text-red-500 flex-shrink-0 text-lg"
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
-                </div>
+                </>
             )}
         </div>
     );
