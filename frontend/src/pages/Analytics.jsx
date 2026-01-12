@@ -51,24 +51,24 @@ export const Analytics = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
             <Appbar />
-            <div className="max-w-6xl mx-auto p-6">
+            <div className="max-w-6xl mx-auto px-3 md:p-6 py-4">
                 {/* Header */}
-                <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6 gap-3">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">📊 Analytics</h1>
-                        <p className="text-gray-500 dark:text-gray-400">Track your spending patterns</p>
+                        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">📊 Analytics</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Spending patterns</p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5 md:gap-2 overflow-x-auto">
                         {['week', 'month', 'year', 'all'].map(p => (
                             <button
                                 key={p}
                                 onClick={() => setPeriod(p)}
-                                className={`px-4 py-2 rounded-lg font-medium capitalize transition ${period === p
-                                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
-                                        : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50'
+                                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-sm font-medium capitalize transition ${period === p
+                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
+                                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300'
                                     }`}
                             >
-                                {p === 'all' ? 'All Time' : p}
+                                {p === 'all' ? 'All' : p}
                             </button>
                         ))}
                     </div>
@@ -86,10 +86,10 @@ export const Analytics = () => {
                 ) : data && (
                     <>
                         {/* Summary Cards */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-100 dark:border-gray-700">
-                                <p className="text-gray-500 dark:text-gray-400 text-sm mb-1">Total Sent</p>
-                                <p className="text-2xl font-bold text-red-500">
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 mb-4 md:mb-6">
+                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 md:p-5 border border-gray-100 dark:border-gray-700">
+                                <p className="text-gray-500 dark:text-gray-400 text-xs md:text-sm mb-1">Total Sent</p>
+                                <p className="text-lg md:text-2xl font-bold text-red-500">
                                     {formatAmount(data.summary.totalSent)}
                                 </p>
                                 <span className="text-xs text-gray-400">↑ Outgoing</span>
@@ -119,9 +119,9 @@ export const Analytics = () => {
 
                         {/* Monthly Bar Chart */}
                         {monthlyChartData.length > 0 && (
-                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700">
-                                <h2 className="text-lg font-bold mb-4 dark:text-white">Monthly Overview</h2>
-                                <ResponsiveContainer width="100%" height={300}>
+                            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 md:p-6 mb-4 md:mb-6 border border-gray-100 dark:border-gray-700">
+                                <h2 className="text-base md:text-lg font-bold mb-3 md:mb-4 dark:text-white">Monthly Overview</h2>
+                                <ResponsiveContainer width="100%" height={200}>
                                     <BarChart data={monthlyChartData}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                                         <XAxis dataKey="name" stroke="#9ca3af" />

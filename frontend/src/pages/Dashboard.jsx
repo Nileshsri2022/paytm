@@ -36,10 +36,10 @@ const formatCurrency = (amount) => {
 const QuickAction = ({ icon, label, onClick, color = "bg-white" }) => (
     <button
         onClick={onClick}
-        className={`${color} flex flex-col items-center justify-center p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 border border-gray-100`}
+        className={`${color} flex flex-col items-center justify-center p-3 md:p-4 rounded-xl md:rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 border border-gray-100 min-w-[70px]`}
     >
-        <span className="text-3xl mb-2">{icon}</span>
-        <span className="text-sm font-medium text-gray-700">{label}</span>
+        <span className="text-2xl md:text-3xl mb-1 md:mb-2">{icon}</span>
+        <span className="text-xs md:text-sm font-medium text-gray-700 text-center leading-tight">{label}</span>
     </button>
 );
 
@@ -163,39 +163,41 @@ export const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
             <Appbar />
 
-            <div className="max-w-6xl mx-auto px-4 py-6">
+            <div className="max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-6">
                 {/* Balance Card */}
-                <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-3xl p-8 text-white shadow-xl mb-8">
+                <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-2xl md:rounded-3xl p-5 md:p-8 text-white shadow-xl mb-5 md:mb-8">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="text-white/70 text-sm font-medium mb-1">Total Balance</p>
-                            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            <p className="text-white/70 text-xs md:text-sm font-medium mb-1">Total Balance</p>
+                            <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
                                 {formatCurrency(balance)}
                             </h1>
-                            <p className="text-white/60 text-sm mt-2">PayTM Wallet</p>
+                            <p className="text-white/60 text-xs md:text-sm mt-1 md:mt-2">PayTM Wallet</p>
                         </div>
-                        <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
-                            <span className="text-4xl">💳</span>
+                        <div className="bg-white/20 backdrop-blur-sm rounded-xl md:rounded-2xl p-3 md:p-4">
+                            <span className="text-3xl md:text-4xl">💳</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Quick Actions Grid */}
-                <div className="mb-8">
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-                    <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
-                        <QuickAction icon="📥" label="Add Money" onClick={() => navigate("/add-money")} />
-                        <QuickAction icon="🏧" label="Withdraw" onClick={() => navigate("/withdraw")} />
-                        <QuickAction icon="📷" label="Scan & Pay" onClick={() => navigate("/scan-pay")} />
-                        <QuickAction icon="📱" label="My QR" onClick={() => setShowQRGenerator(true)} />
-                        <QuickAction icon="⭐" label="Favorites" onClick={() => navigate("/beneficiaries")} />
-                        <QuickAction icon="📅" label="Scheduled" onClick={() => navigate("/scheduled")} />
-                        <QuickAction icon="💸" label="Request" onClick={() => navigate("/requests")} />
-                        <QuickAction icon="✂️" label="Split Bill" onClick={() => navigate("/split")} />
-                        <QuickAction icon="📊" label="Analytics" onClick={() => navigate("/analytics")} />
+                <div className="mb-6 md:mb-8">
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-3 md:mb-4">Quick Actions</h2>
+                    <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
+                        <div className="flex gap-3 md:grid md:grid-cols-9 md:gap-4 min-w-max md:min-w-0">
+                            <QuickAction icon="📥" label="Add" onClick={() => navigate("/add-money")} />
+                            <QuickAction icon="🏧" label="Withdraw" onClick={() => navigate("/withdraw")} />
+                            <QuickAction icon="📷" label="Scan" onClick={() => navigate("/scan-pay")} />
+                            <QuickAction icon="📱" label="My QR" onClick={() => setShowQRGenerator(true)} />
+                            <QuickAction icon="⭐" label="Favorites" onClick={() => navigate("/beneficiaries")} />
+                            <QuickAction icon="📅" label="Scheduled" onClick={() => navigate("/scheduled")} />
+                            <QuickAction icon="💸" label="Request" onClick={() => navigate("/requests")} />
+                            <QuickAction icon="✂️" label="Split" onClick={() => navigate("/split")} />
+                            <QuickAction icon="📊" label="Analytics" onClick={() => navigate("/analytics")} />
+                        </div>
                     </div>
                 </div>
 

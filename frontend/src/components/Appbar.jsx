@@ -35,44 +35,49 @@ export const Appbar = () => {
 
     return (
         <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-            <div className="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div className="max-w-6xl mx-auto px-3 md:px-4 h-14 md:h-16 flex justify-between items-center">
+                {/* Logo */}
                 <div
-                    className="flex items-center gap-2 cursor-pointer"
+                    className="flex items-center gap-1.5 md:gap-2 cursor-pointer"
                     onClick={() => navigate("/dashboard")}
                 >
-                    <span className="text-2xl">💳</span>
-                    <span className="font-bold text-xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <span className="text-xl md:text-2xl">💳</span>
+                    <span className="font-bold text-lg md:text-xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                         PayTM
                     </span>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <span className="text-gray-600 dark:text-gray-300 text-sm hidden md:block">
-                        Welcome, <span className="font-medium text-gray-900 dark:text-white">{userName}</span>
-                    </span>
+                {/* Right side actions */}
+                <div className="flex items-center gap-1 md:gap-3">
+                    <NotificationBell />
+                    <ThemeToggle />
 
-                    <div className="flex items-center gap-2">
-                        <NotificationBell />
-                        <ThemeToggle />
-                        <button
-                            onClick={() => navigate("/profile")}
-                            className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-800 rounded-lg transition-all"
-                        >
-                            Profile
-                        </button>
-                        <button
-                            onClick={handleLogout}
-                            className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800 rounded-lg transition-all"
-                        >
-                            Sign Out
-                        </button>
-                    </div>
+                    {/* Profile - icon on mobile, text on desktop */}
+                    <button
+                        onClick={() => navigate("/profile")}
+                        className="p-2 md:px-3 md:py-2 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-800 rounded-lg transition-all"
+                        title="Profile"
+                    >
+                        <span className="md:hidden text-lg">👤</span>
+                        <span className="hidden md:inline text-sm font-medium">Profile</span>
+                    </button>
 
+                    {/* Sign Out - icon on mobile, text on desktop */}
+                    <button
+                        onClick={handleLogout}
+                        className="p-2 md:px-3 md:py-2 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800 rounded-lg transition-all"
+                        title="Sign Out"
+                    >
+                        <span className="md:hidden text-lg">🚪</span>
+                        <span className="hidden md:inline text-sm font-medium">Sign Out</span>
+                    </button>
+
+                    {/* Avatar */}
                     <div
-                        className={`bg-gradient-to-r ${avatarGradient} rounded-full h-10 w-10 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow ring-2 ring-offset-2 ring-transparent hover:ring-indigo-300`}
+                        className={`bg-gradient-to-r ${avatarGradient} rounded-full h-8 w-8 md:h-10 md:w-10 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow`}
                         onClick={() => navigate("/profile")}
                     >
-                        <span className="text-white font-semibold">
+                        <span className="text-white font-semibold text-sm md:text-base">
                             {userInitial}
                         </span>
                     </div>
