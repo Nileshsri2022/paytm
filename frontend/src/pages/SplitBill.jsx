@@ -4,6 +4,7 @@ import api from '../utils/api';
 import { Appbar } from '../components/Appbar';
 import { SkeletonUserList } from '../components/Skeleton';
 import { showSuccess, showError, showInfo } from '../utils/toast';
+import { PinModal } from '../components/PinModal';
 
 export const SplitBill = () => {
     const [created, setCreated] = useState([]);
@@ -17,6 +18,7 @@ export const SplitBill = () => {
         selectedParticipants: []
     });
     const [activeTab, setActiveTab] = useState('created');
+    const [pinModal, setPinModal] = useState({ open: false, billId: null, amount: 0 });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -65,13 +67,18 @@ export const SplitBill = () => {
         }
     };
 
-    const handlePay = async (id) => {
+    const openPinModal = (billId, amount) => {
+        setPinModal({ open: true, billId, amount });
+    };
+
+    const handlePay = async (pin) => {
         try {
-            await api.post(`/splitbill/${id}/pay`);
+            await api.post(`/splitbill/${pinModal.billId}/pay`, { pin });
             fetchBills();
             showSuccess('Paid successfully!');
         } catch (error) {
             showError(error.response?.data?.message || 'Payment failed');
+            throw error;
         }
     };
 
@@ -282,7 +289,7 @@ export const SplitBill = () => {
                                                         return (
                                                             <div key={idx} className="flex gap-2">
                                                                 <button
-                                                                    onClick={() => handlePay(bill._id)}
+                                                                    onClick={() => openPinModal(bill._id, p.amount)}
                                                                     className="px-4 py-2 bg-green-500 text-white rounded-lg"
                                                                 >
                                                                     ✓ Pay ₹{p.amount}
@@ -307,6 +314,13 @@ export const SplitBill = () => {
                     </div>
                 )}
             </div>
+            <PinModal
+                isOpen={pinModal.open}
+                onClose={() => setPinModal({ open: false, billId: null, amount: 0 })}
+                onSubmit={handlePay}
+                amount={pinModal.amount}
+                description="Pay split bill share"
+            />
         </div>
     );
 };

@@ -4,6 +4,7 @@ import api from '../utils/api';
 import { Appbar } from '../components/Appbar';
 import { SkeletonUserList } from '../components/Skeleton';
 import { showSuccess, showError, showInfo } from '../utils/toast';
+import { PinModal } from '../components/PinModal';
 
 export const RequestMoney = () => {
     const [sent, setSent] = useState([]);
@@ -13,6 +14,7 @@ export const RequestMoney = () => {
     const [beneficiaries, setBeneficiaries] = useState([]);
     const [formData, setFormData] = useState({ toUserId: '', amount: '', message: '' });
     const [activeTab, setActiveTab] = useState('received');
+    const [pinModal, setPinModal] = useState({ open: false, requestId: null, amount: 0 });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -56,13 +58,18 @@ export const RequestMoney = () => {
         }
     };
 
-    const handlePay = async (id) => {
+    const openPinModal = (requestId, amount) => {
+        setPinModal({ open: true, requestId, amount });
+    };
+
+    const handlePay = async (pin) => {
         try {
-            await api.post(`/requests/${id}/pay`);
+            await api.post(`/requests/${pinModal.requestId}/pay`, { pin });
             fetchRequests();
             showSuccess('Paid successfully!');
         } catch (error) {
             showError(error.response?.data?.message || 'Payment failed');
+            throw error;
         }
     };
 
@@ -201,10 +208,10 @@ export const RequestMoney = () => {
                                             {activeTab === 'received' && req.status === 'pending' && (
                                                 <>
                                                     <button
-                                                        onClick={() => handlePay(req._id)}
+                                                        onClick={() => openPinModal(req._id, req.amount)}
                                                         className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                                                     >
-                                                        ✓ Pay
+                                                        ✓ Pay ₹{req.amount}
                                                     </button>
                                                     <button
                                                         onClick={() => handleDecline(req._id)}
@@ -230,6 +237,13 @@ export const RequestMoney = () => {
                     </div>
                 )}
             </div>
+            <PinModal
+                isOpen={pinModal.open}
+                onClose={() => setPinModal({ open: false, requestId: null, amount: 0 })}
+                onSubmit={handlePay}
+                amount={pinModal.amount}
+                description="Pay request"
+            />
         </div>
     );
 };

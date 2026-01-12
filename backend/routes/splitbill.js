@@ -87,6 +87,40 @@ router.post('/', authMiddleware, async (req, res) => {
 
 // Pay my share
 router.post('/:id/pay', authMiddleware, async (req, res) => {
+    const { pin } = req.body;
+    const bcrypt = require('bcrypt');
+
+    // Verify Transaction PIN first
+    const user = await User.findById(req.userId);
+    if (!user.transactionPin?.isSet) {
+        return res.status(400).json({ message: "Please set your transaction PIN first", needsPinSetup: true });
+    }
+
+    if (user.transactionPin?.lockedUntil && user.transactionPin.lockedUntil > new Date()) {
+        const mins = Math.ceil((user.transactionPin.lockedUntil - new Date()) / 60000);
+        return res.status(423).json({ message: `Account locked. Try after ${mins} minutes` });
+    }
+
+    if (!pin) {
+        return res.status(400).json({ message: "Transaction PIN required", needsPin: true });
+    }
+
+    const pinValid = await bcrypt.compare(pin, user.transactionPin.hash);
+    if (!pinValid) {
+        user.transactionPin.failedAttempts += 1;
+        if (user.transactionPin.failedAttempts >= 3) {
+            user.transactionPin.lockedUntil = new Date(Date.now() + 15 * 60 * 1000);
+        }
+        await user.save();
+        return res.status(401).json({ message: "Invalid PIN" });
+    }
+
+    // Reset failed attempts
+    await User.findByIdAndUpdate(req.userId, {
+        'transactionPin.failedAttempts': 0,
+        'transactionPin.lockedUntil': null
+    });
+
     const session = await mongoose.startSession();
     session.startTransaction();
 
