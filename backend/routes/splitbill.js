@@ -79,17 +79,30 @@ router.post('/:id/pay', authMiddleware, async (req, res) => {
 
     try {
         const bill = await SplitBill.findById(req.params.id)
-            .populate('createdBy', 'firstName lastName');
+            .populate('createdBy', 'firstName lastName')
+            .populate('participants.userId', 'firstName lastName');
 
         if (!bill) {
+            await session.abortTransaction();
             return res.status(404).json({ message: 'Bill not found' });
         }
 
-        const participant = bill.participants.find(
-            p => (p.userId._id || p.userId).toString() === req.userId && p.status === 'pending'
-        );
+        const currentUserId = req.userId.toString();
+
+        // Debug logging
+        console.log('Pay request - Current user:', currentUserId);
+        console.log('Participants:', bill.participants.map(p => ({
+            id: (p.userId._id || p.userId).toString(),
+            status: p.status
+        })));
+
+        const participant = bill.participants.find(p => {
+            const participantId = (p.userId._id || p.userId).toString();
+            return participantId === currentUserId && p.status === 'pending';
+        });
 
         if (!participant) {
+            await session.abortTransaction();
             return res.status(400).json({ message: 'No pending payment found' });
         }
 
