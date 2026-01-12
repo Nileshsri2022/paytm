@@ -107,15 +107,15 @@ export const RequestMoney = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
             <Appbar />
-            <div className="max-w-4xl mx-auto p-6">
-                <div className="flex justify-between items-center mb-6">
+            <div className="max-w-4xl mx-auto px-4 py-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-5">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">💸 Request Money</h1>
-                        <p className="text-gray-500 dark:text-gray-400">Send and manage payment requests</p>
+                        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">💸 Request Money</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Send and manage payment requests</p>
                     </div>
                     <button
                         onClick={() => setShowForm(!showForm)}
-                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium whitespace-nowrap"
                     >
                         {showForm ? 'Cancel' : '+ New Request'}
                     </button>
