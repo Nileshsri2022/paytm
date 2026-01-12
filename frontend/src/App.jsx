@@ -21,6 +21,7 @@ import { ScheduledPayments } from "./pages/ScheduledPayments";
 import { RequestMoney } from "./pages/RequestMoney";
 import { ChangePin } from "./pages/ChangePin";
 import { SplitBill } from "./pages/SplitBill";
+import { SetupPIN } from "./pages/SetupPIN";
 import { setTokenGetter } from "./utils/api";
 
 // Component to set up token getter
@@ -90,6 +91,9 @@ function App() {
           } />
           <Route path="/split" element={
             <ProtectedRoute><SplitBill /></ProtectedRoute>
+          } />
+          <Route path="/setup-pin" element={
+            <ProtectedRoute><SetupPIN /></ProtectedRoute>
           } />
         </Routes>
       </AuthSetup>
