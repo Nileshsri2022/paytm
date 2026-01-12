@@ -4,6 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const { authMiddleware } = require('../middleware');
 const { PaymentRequest, User, Account, Transaction } = require('../db');
+const NotificationService = require('../services/notificationService');
 
 // Get requests (sent and received)
 router.get('/', authMiddleware, async (req, res) => {
@@ -64,6 +65,10 @@ router.post('/', authMiddleware, async (req, res) => {
             message: message || `Payment request`
         });
 
+        // Notify recipient about request
+        const requester = await User.findById(req.userId);
+        NotificationService.requestReceived(toUserId, requester.firstName || 'Someone', amount);
+
         const populated = await request.populate('toUserId', 'firstName lastName username');
         res.status(201).json({ message: 'Request sent', request: populated });
     } catch (error) {
@@ -122,6 +127,15 @@ router.post('/:id/pay', authMiddleware, async (req, res) => {
         await request.save({ session });
 
         await session.commitTransaction();
+
+        // Notify requester that their request was paid
+        const payer = await User.findById(req.userId);
+        NotificationService.requestPaid(
+            request.fromUserId._id,
+            payer.firstName || 'Someone',
+            request.amount
+        );
+
         res.json({ message: 'Payment successful', request });
     } catch (error) {
         await session.abortTransaction();
@@ -171,3 +185,4 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+

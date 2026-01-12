@@ -4,6 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const { authMiddleware } = require('../middleware');
 const { SplitBill, User, Account, Transaction } = require('../db');
+const NotificationService = require('../services/notificationService');
 
 // Get all split bills (created + participating)
 router.get('/', authMiddleware, async (req, res) => {
@@ -65,6 +66,18 @@ router.post('/', authMiddleware, async (req, res) => {
         });
 
         const populated = await bill.populate('participants.userId', 'firstName lastName');
+
+        // Send notifications to all participants
+        const creator = await User.findById(req.userId);
+        for (const p of splitParticipants) {
+            NotificationService.splitInvite(
+                p.userId,
+                creator.firstName || 'Someone',
+                title,
+                p.amount
+            );
+        }
+
         res.status(201).json({ message: 'Split bill created', bill: populated });
     } catch (error) {
         console.error('Create split error:', error);
@@ -147,6 +160,15 @@ router.post('/:id/pay', authMiddleware, async (req, res) => {
 
         await bill.save({ session });
         await session.commitTransaction();
+
+        // Notify bill creator
+        const payer = await User.findById(req.userId);
+        NotificationService.splitPaid(
+            bill.createdBy._id,
+            payer.firstName || 'Someone',
+            bill.title,
+            participant.amount
+        );
 
         res.json({ message: 'Payment successful', bill });
     } catch (error) {
