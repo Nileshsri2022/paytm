@@ -86,7 +86,7 @@ router.post('/:id/pay', authMiddleware, async (req, res) => {
         }
 
         const participant = bill.participants.find(
-            p => p.userId.toString() === req.userId && p.status === 'pending'
+            p => (p.userId._id || p.userId).toString() === req.userId && p.status === 'pending'
         );
 
         if (!participant) {
@@ -155,7 +155,7 @@ router.post('/:id/decline', authMiddleware, async (req, res) => {
         }
 
         const participant = bill.participants.find(
-            p => p.userId.toString() === req.userId && p.status === 'pending'
+            p => (p.userId._id || p.userId).toString() === req.userId && p.status === 'pending'
         );
 
         if (!participant) {
